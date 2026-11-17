@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+@theme {
+  /* Surface palette — warm paper-whites graded into cool ink-greys */
+  --color-surface-0: #fafbfd;
+  --color-surface-1: #f1f3f8;
+  --color-surface-2: #e6e9f1;
+  --color-surface-3: #d1d5e1;
+  --color-surface-4: #b4b9c8;
+
+  /* Text hierarchy */
+  --color-text-primary: #1a1e2e;
+  --color-text-secondary: #555a70;
+  --color-text-muted: #8b90a5;
+
+  /* Edge / outline tones for light backgrounds */
+  --color-stroke-faint: rgba(15, 23, 42, 0.08);
+  --color-stroke-strong: #1a1e2e;
+
+  /* Facet palette — deeper hues for contrast on light surfaces */
+  --color-facet-problems: #2b5cd6;
+  --color-facet-methods: #0f9d6b;
+  --color-facet-results: #cf6b14;
+  --color-facet-contributions: #8b3fcf;
+  --color-facet-cross: #6b7280;
+
+  /* Accent */
+  --color-accent: #2b5cd6;
+  --color-accent-glow: #2b5cd633;
+
+  /* Fonts */
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "Newsreader", "Georgia", serif;
+  --font-mono: "DM Mono", "Menlo", monospace;
+}
+
+/* Base resets */
+body {
+  margin: 0;
+  background: var(--color-surface-0);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar styling for detail panel */
+.detail-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.detail-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.detail-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-surface-4);
+  border-radius: 2px;
+}
+
+/* Graph background grain texture */
+.graph-bg {
+  background:
+    radial-gradient(
+      ellipse at 30% 50%,
+      #e9edf5 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse at 70% 50%,
+      #efe9f5 0%,
+      transparent 70%
+    ),
+    var(--color-surface-0);
+}
+
+/* Search input focus ring */
+.search-input:focus {
+  box-shadow: 0 0 0 1px var(--color-accent), 0 0 20px var(--color-accent-glow);
+}
+
+/* Facet filter pills */
+.facet-pill {
+  transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+.facet-pill:hover {
+  transform: translateY(-1px);
+}
+.facet-pill:active {
+  transform: translateY(0);
+}
+
+/* Detail panel slide-in */
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.detail-panel {
+  animation: slide-in-right 0.25s ease-out;
+}
+
+/* Provenance trail connector line */
+.trail-step {
+  position: relative;
+}
+.trail-step::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 20px;
+  bottom: -4px;
+  width: 1px;
+  background: var(--color-surface-4);
+}
+.trail-step:last-child::before {
+  display: none;
+}
+
+/* Expand button hover glow */
+.expand-btn {
+  transition: background-color 0.15s ease, box-shadow 0.2s ease;
+}
+.expand-btn:hover:not(:disabled) {
+  box-shadow: 0 0 12px var(--color-accent-glow);
+}
+
+/* Stats overlay */
+.stats-overlay {
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+/* Search spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.search-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+/* Close button */
+.close-btn:hover {
+  background: var(--color-surface-4) !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* Empty state pulse */
+@keyframes subtle-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+.empty-pulse {
+  animation: subtle-pulse 3s ease-in-out infinite;
+}

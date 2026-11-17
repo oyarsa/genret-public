@@ -1,0 +1,35 @@
+_default:
+    @just --list
+
+# Install dependencies
+install:
+    npm install
+
+# Start dev server
+dev:
+    npm run dev
+
+# Build for production
+build:
+    npm run build
+
+# Preview production build
+preview:
+    npm run preview
+
+# Lint with eslint
+lint:
+    npm run lint
+
+# Run vitest suite once
+test:
+    npm run test
+
+# Run vitest in watch mode
+test-watch:
+    npm run test:watch
+
+# Build and run Playwright end-to-end tests against the fixture server
+e2e:
+    npm run build
+    npx playwright test

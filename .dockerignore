@@ -1,0 +1,22 @@
+# The image carries source and the built frontend only. Data, models and
+# caches are bind-mounted at /data (see deployment/README.md).
+.git/
+.jj/
+data/
+output/
+cache/
+labs/
+notebooks/
+tmp/
+docs/
+scripts/
+tests/
+frontend/node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+**/__pycache__/
+*.pyc
+.venv/
+.env
+.claude/

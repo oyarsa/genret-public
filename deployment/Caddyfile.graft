@@ -1,0 +1,43 @@
+# Site block for Graft, to append to the GraphMind stack's Caddyfile
+# (deployment/Caddyfile in the graphmind repo). Caddy matches on the
+# hostname, so this coexists with graphmind.maleldil.com on the same IP
+# and ports; it provisions its own certificate on first request.
+#
+# Requires: an A record for graft.maleldil.com pointing at this host.
+# The name `graft` resolves because the Graft container joins this
+# stack's existing network with that alias, so nothing here changes.
+
+graft.maleldil.com {
+    log {
+        output file /data/access-graft.log {
+            roll_size 50MiB
+            roll_keep 3
+        }
+        format json
+    }
+
+    # Scanner blocklist. This must be a `handle` rather than a bare
+    # `respond`: Caddy sorts directives by its own order, in which the
+    # catch-all `handle` below comes first and would swallow everything.
+    # Sibling `handle` blocks are exclusive and evaluated in written
+    # order, so this one wins for the paths it matches.
+    @scanners {
+        path /.env /.git/* /wp-admin/* /wp-login* /phpMyAdmin*
+        path /.aws/* /.docker/* /.kube/* /config.json /credentials
+        path /actuator/* /api/v1/pods /server-status /debug/*
+    }
+    handle @scanners {
+        respond 403
+    }
+
+    handle {
+        reverse_proxy graft:8000 {
+            # Facet extraction on an uncached paper takes ~10s and the
+            # recommend stream stays open throughout, so do not cut it
+            # short. Caddy streams text/event-stream unbuffered already.
+            transport http {
+                read_timeout 300s
+            }
+        }
+    }
+}

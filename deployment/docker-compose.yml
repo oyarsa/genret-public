@@ -1,0 +1,47 @@
+services:
+  graft:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    restart: unless-stopped
+    environment:
+      LOG_LEVEL: "info"
+    # OPENAI_API_KEY, used by facet extraction and the explain endpoint.
+    # No Semantic Scholar key: Silver stays off, so nothing calls S2.
+    env_file:
+      - ../.env
+    volumes:
+      # Corpus, metadata, fulltext and the ONNX encoder. Read-only: the
+      # server never writes here. Populated by deployment/sync-data.sh.
+      - ${GRAFT_DATA_DIR:-/opt/graft-data}:/data:ro
+      # Facet and explanation caches. A named volume so restarts and
+      # rebuilds keep the LLM work already paid for.
+      - graft_cache:/cache
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "/app/.venv/bin/python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health').read()"]
+      interval: 30s
+      timeout: 10s
+      # Loading the corpus takes ~20s, and the container is unhealthy
+      # (not failed) until it finishes.
+      start_period: 90s
+      retries: 3
+    networks:
+      default:
+        # Caddy proxies to this name; an alias keeps it independent of
+        # the container name docker compose generates.
+        aliases:
+          - graft
+
+volumes:
+  graft_cache:
+
+networks:
+  # The network the GraphMind stack already runs on, so its Caddy can
+  # reach this container. Joining an existing network means that stack
+  # needs no edit and no restart.
+  default:
+    name: deployment_default
+    external: true
