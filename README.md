@@ -1,4 +1,6 @@
-# GRAFT: facet-based generative paper retrieval
+# GRAFT: Graph-Distilled Generative Retrieval for Facet-Aware Scientific Literature Exploration
+
+Italo Luis da Silva, Hanqi Yan, Yujing Wang, Jiangnan Ye, Lin Gui, Yulan He
 
 This repository contains the Python retrieval and training code, evaluation
 scripts, and an optional web explorer. GRAFT generates facet-based document
